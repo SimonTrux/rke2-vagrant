@@ -15,23 +15,26 @@ Vagrant.configure("2") do |config|
 #   node.vm.hostname = "cp"
 # end
 
-  N = 3
+  N = 2
   (1..N).each do |id|
 
     if id == 1
-      hostname = "cp1"
+      config.vm.define "cp1" do |node|
+        node.vm.hostname = "cp1"
+      end
+      config.vm.define "node#{id}" do |node|
+        node.vm.hostname = "node#{id}"
+      end
     else
-      hostname = "node#{id}"
-
-    config.vm.define "#{hostname}" do |node|
-      node.vm.hostname = "#{hostname}"
+      config.vm.define "node#{id}" do |node|
+        node.vm.hostname = "node#{id}"
 
     if id == N
       node.vm.provision :ansible do |ansible|
         ansible.limit = "all"
         ansible.playbook = "ansible/play.yml"
       end
-    end
+      end
     end
     end
   end
