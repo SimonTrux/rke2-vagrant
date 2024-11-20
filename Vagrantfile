@@ -11,22 +11,30 @@ Vagrant.configure("2") do |config|
     lv.cpus = 2
   end
 
-  config.vm.define "cp1" do |node|
-    node.vm.hostname = "cp"
-  end
+# config.vm.define "cp1" do |node|
+#   node.vm.hostname = "cp"
+# end
 
-  N=2
-  (1..N).each do |i|
-    hostname = "node#{'%02d' % i}"
+  N = 3
+  (1..N).each do |id|
+
+    if id == 1
+      hostname = "cp1"
+    else
+      hostname = "node#{id}"
+
     config.vm.define "#{hostname}" do |node|
       node.vm.hostname = "#{hostname}"
+
+    if id == N
+      node.vm.provision :ansible do |ansible|
+        ansible.limit = "all"
+        ansible.playbook = "ansible/play.yml"
+      end
+    end
+    end
     end
   end
-
-  config.vm.provision "ansible" do |ansible|
-    ansible.playbook = "ansible.play.yml"
-  end
-
 
 
   # Enable provisioning with a shell script. Additional provisioners such as
