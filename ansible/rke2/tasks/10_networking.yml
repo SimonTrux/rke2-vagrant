@@ -1,0 +1,34 @@
+#SPDX-License-Identifier: MIT-0
+---
+# tasks file for rke2
+- name: Tell Network Manager not to manage calico and flannel interfaces
+  ansible.builtin.copy:
+    src: rke2-canal.conf
+    dest: /etc/NetworkManager/conf.d/rke2-canal.conf
+
+- name: Restart Network Manager
+  ansible.builtin.systemd:
+    name: NetworkManager
+    state: restarted
+    enabled: true
+
+- name: Disable firewalld
+  ansible.builtin.systemd:
+    name: firewalld
+    state: stopped
+    enabled: false
+
+- name: Write nftable config
+  ansible.builtin.template:
+    src: nftables.conf
+    dest: /etc/sysconfig/nftables.conf
+    group: root
+    mode: "0644"
+    validate: /usr/sbin/nft -cf %s
+    backup: yes
+
+- name: Enable nftables
+  ansible.builtin.systemd:
+    name: nftables
+    state: restarted
+    enabled: true

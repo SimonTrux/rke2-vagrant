@@ -15,30 +15,38 @@ Vagrant.configure("2") do |config|
 #   node.vm.hostname = "cp"
 # end
 
-  N = 2
+  N = 3
   (1..N).each do |id|
 
     if id == 1
-      config.vm.define "cp1" do |node|
-        node.vm.hostname = "cp1"
-      end
-      config.vm.define "node#{id}" do |node|
-        node.vm.hostname = "node#{id}"
-      end
+      hostname = "cp1"
     else
-      config.vm.define "node#{id}" do |node|
-        node.vm.hostname = "node#{id}"
+      hostname = "node#{id}"
+
+    config.vm.define "#{hostname}" do |node|
+      node.vm.hostname = "#{hostname}"
 
     if id == N
       node.vm.provision :ansible do |ansible|
         ansible.limit = "all"
         ansible.playbook = "ansible/play.yml"
+        ansible.groups = {
+          "cp" => ["cp1"],
+          "cp:vars" => {"INSTALL_RKE2_TYPE" => "server",
+                             "test_var" => "test_var_is_cp"},
+          "nodes" => ["node2", "node3"],
+          "nodes:vars" => {"INSTALL_RKE2_TYPE" => "agent",
+                             "test_var" => "test_var_is_agent"}
+}
       end
-      end
+    end
     end
     end
   end
 
+
+       #  "nodes:vars" => {"ntp_server" => "ntp.atlanta.example.com",
+       #                     "proxy" => "proxy.atlanta.example.com"}
 
   # Enable provisioning with a shell script. Additional provisioners such as
   # Ansible, Chef, Docker, Puppet and Salt are also available. Please see the

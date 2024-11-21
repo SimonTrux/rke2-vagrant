@@ -1,0 +1,8 @@
+#SPDX-License-Identifier: MIT-0
+---
+- name: Import networking tasks
+  ansible.builtin.include_tasks: "{{ item }}"
+  loop:
+      - "10_networking.yml"
+      - "30_install_rke2.yml"
+

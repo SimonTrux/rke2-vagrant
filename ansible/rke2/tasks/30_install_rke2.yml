@@ -1,0 +1,12 @@
+---
+- name: Define if host is agent or server
+  set_fact:
+    srv_or_agent: "{{ 'agent' if 'nodes' in group_names else 'server' }}"
+
+- name: Show the var
+  ansible.builtin.debug:
+    msg: "agent or server ? => {{ srv_or_agent }}"
+
+#- name: Copy RKE2 install script to the server
+  
+ 
