@@ -16,6 +16,8 @@ unmanaged-devices=interface-name:cali*;interface-name:flannel*
 # then, if machine running
 systemctl reload NetworkManager
 ```
+OK
+
 
 Rebuild smaller Vagrant images with packer, maybe try with alpine
 do some vagrant ansible at start
