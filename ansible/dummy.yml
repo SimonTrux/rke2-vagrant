@@ -1,0 +1,7 @@
+---
+- hosts: all
+  become: true
+
+  tasks:
+  - name: Check if alive
+    ansible.builtin.ping:
